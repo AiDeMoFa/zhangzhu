@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ysd.mapper.ModuleMapper">
+ 
+    <select id="GetModulesByRoleIdLayUI" resultType="com.ysd.entity.Modules"  >
+         select c.* from roles a inner join rolemodules b on #{roleId}=b.RoleId 
+           inner join modules  c on c.Id=b.ModuleId
+          
+    </select>
+    <select id="GetAllModuleLayUI" resultType="com.ysd.entity.Modules">
+       select * from modules
+    </select>
+      <select id="GetModuleById" resultType="com.ysd.entity.Modules">
+          select * from modules
+           <where>
+             <if test="Id!=null">
+                Id=#{Id}
+             </if>
+           </where>
+    </select>
+    
+  
+    <insert id="CreateModule">
+        insert into modules(Name,ParentId,Path,Weight) values(#{Name},#{ParentId},#{path},#{Weight});
+          
+    </insert>
+    
+   <insert id="AddUserToModule">
+       insert into rolemodules
+       values(uuid(),#{RoleId},#{ModuleId})
+        
+    </insert>
+    
+    <delete id="RemoveUserFromModule">
+      delete from rolemodules
+       where RoleId=#{RoleId} and ModuleId=#{ModuleId}
+    </delete>
+     
+    <update id="UpdateModule">
+      update modules set ParentId=#{ParentId} where Id=#{Id}
+    </update>
+    
+    
+    <delete id="DeleteModule" >
+      delete from modules where Id=#{Id}
+    </delete>
+ </mapper>

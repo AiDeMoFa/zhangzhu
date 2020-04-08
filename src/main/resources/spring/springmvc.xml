@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.1.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-4.1.xs
+http://mybatis.org/schema/mybatis-spring 
+http://mybatis.org/schema/mybatis-spring.xsd 
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+<!-- 开启spring扫描注解 -->
+<context:component-scan base-package="com.ysd.*"></context:component-scan>
+<!-- 开启springMvc注解 -->
+ <mvc:annotation-driven/>
+   <!-- redis配置 -->
+   <import resource="classpath:spring/applicationContext-redis.xml"/>
+
+<!-- 视图解析器：ViewResolver -->
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<!-- 前缀 -->
+<property name="prefix" value="../WEB-INF/"></property>
+<!-- 后缀 -->
+<property name="suffix" value=".jsp"></property>
+</bean>
+<mvc:default-servlet-handler/>
+<mvc:annotation-driven/>
+ <!--过滤静态资源-->
+     <mvc:resources mapping="/layui/**" location="layui/"/>
+           <mvc:resources mapping="/font/**" location="/font/"/>
+           <mvc:resources mapping="/images/**" location="/images/"/>
+           <mvc:resources mapping="/lay/**" location="/lay/"/>
+           <mvc:resources mapping="/js/**" location="/js/"/>
+           <mvc:resources mapping="/styles/**" location="/css/" ></mvc:resources>
+           <mvc:resources mapping="/favicon.ico" location="/favicon.ico"/> 
+  <mvc:interceptors>
+	<!-- 	登录拦截器 -->
+		<mvc:interceptor>
+		<!-- 	要拦截的路径，/**代表拦截所有 -->
+			<mvc:mapping path="/api/login" />
+			<!-- 拦截器的全限定路径 -->
+			<bean class="com.ysd.interceptor.LoginInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>         
+   
+</beans>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ysd.mapper.UsersMapper">
+ 
+    <select id="getAllUsers" resultType="com.ysd.entity.Users"  >
+          select * from users
+           <where>
+             <if test="LoginName!=null and LoginName!=''">
+               and LoginName like "%${LoginName}%"
+             </if>         
+             
+             <if test="IsLockout!=null and IsLockout!=''">
+               and IsLockout=#{IsLockout}
+             </if> 
+           </where>
+            limit #{page},#{limit}
+         
+    </select>
+    <select id="countAll" resultType="int">
+          select count(*) from users
+              <where>
+             <if test="LoginName!=null and LoginName!=''">
+               and LoginName like "%${LoginName}%"
+             </if>
+           
+              <if test="IsLockout!=null and IsLockout!=''">
+               and IsLockout=#{IsLockout}
+             </if> 
+           </where>
+    </select>
+    <select id="login" resultType="com.ysd.entity.Users">
+          select * from users
+          <where>
+            <if test="LoginName!=null and LoginName!=''">
+                and LoginName=#{LoginName}
+            </if>
+           <if test="PassWord!=null and PassWord!=''">
+                and PassWord=#{PassWord}
+            </if>
+          </where>
+    </select>
+    
+    <update id="UpdateUser">
+      update users set
+       <if test="LoginName!=null">
+         LoginName=#{LoginName},
+       </if>
+        <if test="ProtectEMail!=null">
+          ProtectEMail=#{ProtectEMail},
+       </if>
+         <if test="ProtectMTel!=null">
+          ProtectMTel=#{ProtectMTel}
+       </if>
+       <where>
+         <if test="Id!=null">
+              Id=#{Id}
+         </if>
+       </where>
+    </update>
+    
+     <update id="LockUser">
+       update users set isLockout='是'
+       <where>
+       <if test="LoginName!=null">
+         LoginName=#{LoginName}
+       </if>
+       </where>
+     </update>
+    
+     <update id="UnLockUser">
+       update users set isLockout='否'
+       <where>
+       <if test="LoginName!=null">
+         LoginName=#{LoginName}
+       </if>
+       </where>
+     </update>
+     
+     <update id="updateTime">
+        update users set LastLoginTime=#{LastLoginTime}
+        <where>
+          <if test="Id!=null">
+            Id=#{Id}
+          </if>
+        </where>
+     </update>
+    
+    <delete id="DeleteUser">
+       delete from users
+       <where>
+         <if test="Id!=null and Id !=''">
+              Id=#{Id}
+         </if>
+       </where>
+    </delete>
+    
+    <insert id="CreateUser">
+       insert into users(Id,LoginName, PassWord, ProtectEMail, ProtectMTel) values(uuid(),#{LoginName},#{PassWord},#{ProtectMTel},#{ProtectEMail});
+        
+    </insert>
+ </mapper>

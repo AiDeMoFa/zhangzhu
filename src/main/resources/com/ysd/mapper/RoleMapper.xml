@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ysd.mapper.RoleMapper">
+ 
+    <select id="GetRolesByUserId" resultType="com.ysd.entity.Roles"  >
+         select c.* from users a inner join  userroles b on 
+          #{userId}=b.UserId inner JOIN roles c on c.Id=b.RoleId group by c.Id
+          
+    </select>
+    <select id="GetRolesAll" resultType="com.ysd.entity.Roles">
+          select * from roles limit #{page},#{limit}
+    </select>
+    
+     <select id="GetRolesAlll" resultType="com.ysd.entity.Roles">
+          select * from roles 
+    </select>
+    
+    <select id="Count" resultType="int">
+          select count(*) from roles
+    </select>
+    
+    <select id="GetSysRightsJsonLayUI" resultType="com.ysd.entity.Modules">
+    
+             select * from modules where ParentId in 
+             (select c.Id from roles a inner join rolemodules b on a.Id=b.RoleId inner join modules c on b.ModuleId=c.Id where 
+               <foreach collection="list" item="item" separator="or">
+                 a.Name= #{item}
+               </foreach>)
+               union 
+              select c.* from roles a inner join rolemodules b on a.Id=b.RoleId
+               inner join modules c on b.ModuleId=c.Id where 
+               <foreach collection="list" item="item" separator="or">
+                 a.Name= #{item}
+               </foreach>
+              
+    </select>
+    
+    <insert id="AddUserToRole">
+      insert into userroles 
+      values(uuid(),#{UserId},#{RoleId})
+    </insert>
+    <delete id="RemoveUserFromRole">
+      delete from userroles 
+      where UserId=#{UserId} and RoleId=#{RoleId}
+    </delete>
+ </mapper>

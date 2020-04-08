@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.3.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+http://mybatis.org/schema/mybatis-spring
+http://mybatis.org/schema/mybatis-spring.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+<context:property-placeholder location="classpath:spring/log4j.properties"/>
+
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+destroy-method="close" scope="singleton">
+<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+<property name="url" value="jdbc:mysql://localhost:3306/crmdb" />
+<property name="username" value="root" />
+<property name="password" value="root" />
+<property name="initialSize" value="10" />
+<property name="maxActive" value="50" />
+<property name="maxIdle" value="10" />
+<property name="minIdle" value="5" />
+<property name="maxWait" value="10000" />
+</bean>
+
+<!-- MyBatis的SqlSession会话工厂,将 SqlSessionFactory 对象交给 spring 管理 -->
+<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ <property name="dataSource" ref="dataSource"></property>
+ <property name="mapperLocations" value="classpath:com/ysd/mapper/*Mapper.xml"></property>
+</bean>
+
+
+<!-- MyBatis映射文件扫描器 -->
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ <property name="basePackage" value="com.ysd.mapper" />
+ <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+</bean>
+
+
+ <!-- 事务管理器 -->
+<bean id="txMgr"
+class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ <property name="dataSource" ref="dataSource"></property>
+</bean>
+<!-- 事务扫描 -->
+<tx:annotation-driven transaction-manager="txMgr"/> 
+
+
+
+
+</beans>
